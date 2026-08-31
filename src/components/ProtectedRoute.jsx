@@ -28,7 +28,7 @@ function writeCache(email, status) {
 // de verdade — via pagamento Hotmart confirmado ou liberação manual no
 // painel administrativo (ver netlify/functions/access-check.mjs).
 export function ProtectedRoute({ children }) {
-  const { user } = useAuth()
+  const { user, loading: sessaoCarregando } = useAuth()
   const location = useLocation()
   const email = user?.email?.trim().toLowerCase()
   const [status, setStatus] = useState(() => (email ? readCache(email) : null))
@@ -58,6 +58,14 @@ export function ProtectedRoute({ children }) {
     }
   }, [email, tentativa])
 
+  if (sessaoCarregando) {
+    return (
+      <div className="flex min-h-[60svh] items-center justify-center px-5 text-center">
+        <p className="text-sm text-graphite-500">Carregando sua sessão…</p>
+      </div>
+    )
+  }
+
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
@@ -78,8 +86,8 @@ export function ProtectedRoute({ children }) {
         </p>
         <p className="mt-2 text-sm text-graphite-500">
           Tente novamente em instantes ou fale com a gente em{' '}
-          <a href="mailto:contato.incluipro@gmail.com" className="font-semibold text-signal-700">
-            contato.incluipro@gmail.com
+          <a href="mailto:contato@incluipro.com" className="font-semibold text-signal-700">
+            contato@incluipro.com
           </a>
           .
         </p>

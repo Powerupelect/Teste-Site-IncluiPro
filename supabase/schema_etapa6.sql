@@ -109,30 +109,42 @@ create policy "unidades escreve admin-rh" on unidades
     )
   );
 
+-- Funções security definer: buscam as empresas do usuário ignorando RLS internamente.
+-- Necessário porque as próprias políticas de membros_empresa precisam consultar
+-- membros_empresa — uma subquery direta nessa mesma tabela causa
+-- "infinite recursion detected in policy for relation membros_empresa".
+create or replace function minhas_empresas()
+returns setof uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select empresa_id from membros_empresa where conta_id = auth.uid()
+$$;
+
+create or replace function minhas_empresas_admin()
+returns setof uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select empresa_id from membros_empresa where conta_id = auth.uid() and papel = 'admin'
+$$;
+
 alter table membros_empresa enable row level security;
 create policy "membros select da propria empresa" on membros_empresa
-  for select using (
-    empresa_id in (select empresa_id from membros_empresa m2 where m2.conta_id = auth.uid())
-  );
+  for select using (empresa_id in (select minhas_empresas()));
 create policy "membros escreve admin" on membros_empresa
   for insert with check (
-    empresa_id in (
-      select empresa_id from membros_empresa m2 where m2.conta_id = auth.uid() and m2.papel = 'admin'
-    )
+    empresa_id in (select minhas_empresas_admin())
     or conta_id = auth.uid() -- permite o próprio cadastro se tornar admin da empresa que criou
   );
 create policy "membros atualiza admin" on membros_empresa
-  for update using (
-    empresa_id in (
-      select empresa_id from membros_empresa m2 where m2.conta_id = auth.uid() and m2.papel = 'admin'
-    )
-  );
+  for update using (empresa_id in (select minhas_empresas_admin()));
 create policy "membros remove admin" on membros_empresa
-  for delete using (
-    empresa_id in (
-      select empresa_id from membros_empresa m2 where m2.conta_id = auth.uid() and m2.papel = 'admin'
-    )
-  );
+  for delete using (empresa_id in (select minhas_empresas_admin()));
 
 -- Permite a uma pessoa convidada (ainda sem conta_id vinculado) aceitar o próprio convite,
 -- casando pelo e-mail da conta dela — sem isso, ninguém consegue aceitar convite (só admin
@@ -149,10 +161,15 @@ create policy "membros aceita proprio convite" on membros_empresa
 -- ============================================================
 
 -- EMPRESAS
+-- SELECT libera pelo vínculo em membros_empresa OU por ser o próprio criador (conta_id):
+-- sem essa segunda condição, o INSERT de uma empresa nova falha, porque o insert usa
+-- RETURNING (via .select() no supabase-js) e RETURNING é filtrado pela política de SELECT —
+-- e o vínculo em membros_empresa só é criado LOGO DEPOIS do insert da empresa, em criarEmpresa().
 drop policy if exists "empresas da conta" on empresas;
 create policy "empresas select membro" on empresas
   for select using (
-    id in (select empresa_id from membros_empresa where conta_id = auth.uid())
+    conta_id = auth.uid()
+    or id in (select minhas_empresas())
   );
 create policy "empresas insere dono" on empresas
   for insert with check (conta_id = auth.uid());

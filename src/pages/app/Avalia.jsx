@@ -16,6 +16,7 @@ import { baixarRelatorioPDF } from '../../lib/pdf.js'
 import { useAuth } from '../../lib/auth.jsx'
 import { getSugestaoRedacao } from '../../lib/sugestoesRedacao.js'
 import { gerarModeloCsv, parseCsv, validarLinhasColaboradores, importarColaboradores } from '../../lib/csvImport.js'
+import { EstadoVazio } from '../../components/ui/Table.jsx'
 
 const CAMPOS_ESSENCIAIS = [
   { key: 'nome', label: 'Nome do candidato' },
@@ -522,13 +523,10 @@ export function Avalia() {
       )}
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-signal-600">
-            IncluiPro Avalia
-          </p>
-          <h1 className="mt-1 font-display text-3xl font-semibold text-indigo-800">
-            Novo Relatório Técnico de Inclusão
+          <h1 className="font-display text-2xl font-semibold text-indigo-900">
+            Avaliações
           </h1>
-          <p className="mt-2 max-w-2xl text-graphite-500">
+          <p className="mt-2 max-w-2xl text-sm text-graphite-500">
             Preencha as anotações da entrevista por blocos e monte o relatório estruturado com a
             metodologia IncluiPro — consulte recursos e ajustes sugeridos por tipo de deficiência e
             edite o texto livremente antes de baixar o PDF.
@@ -780,12 +778,15 @@ export function Avalia() {
 
             {historicoCarregando ? (
               <p className="mt-4 text-sm text-graphite-500">Carregando relatórios…</p>
+            ) : historico.length === 0 ? (
+              <div className="mt-4">
+                <EstadoVazio
+                  titulo="Nenhum relatório gerado ainda"
+                  descricao="Preencha o formulário ao lado e clique em Gerar Relatório para ver o histórico aqui."
+                />
+              </div>
             ) : historicoFiltrado.length === 0 ? (
-              <p className="mt-4 text-sm text-graphite-500">
-                {historico.length === 0
-                  ? 'Nenhum relatório gerado ainda nesta conta.'
-                  : 'Nenhum relatório encontrado para essa busca.'}
-              </p>
+              <p className="mt-4 text-sm text-graphite-500">Nenhum relatório encontrado para essa busca.</p>
             ) : (
               <ul className="mt-4 divide-y divide-mist-300">
                 {historicoFiltrado.map((item) => (

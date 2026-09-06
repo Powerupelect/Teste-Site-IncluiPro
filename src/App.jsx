@@ -26,6 +26,8 @@ import { Lidera } from './pages/app/Lidera.jsx'
 import { Conta } from './pages/app/Conta.jsx'
 import { TriagemLaudos } from './pages/app/TriagemLaudos.jsx'
 import { CentralAcessibilidade } from './pages/app/CentralAcessibilidade.jsx'
+import { CanalFormulario } from './pages/canal/CanalFormulario.jsx'
+import { CanalConsulta } from './pages/canal/CanalConsulta.jsx'
 import { AdminLogin } from './pages/admin/AdminLogin.jsx'
 import { AdminPainel } from './pages/admin/AdminPainel.jsx'
 
@@ -35,6 +37,9 @@ export default function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
+          <Route path="/solicitar/:slug" element={<CanalFormulario />} />
+          <Route path="/solicitar/:slug/consultar" element={<CanalConsulta />} />
+
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/diagnostico" element={<Diagnostico />} />

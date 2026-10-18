@@ -162,6 +162,16 @@ export function Home() {
         <div className="relative mx-auto max-w-6xl">
           <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <Reveal className="max-w-3xl">
+              <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-amber-300 bg-gradient-to-r from-amber-50 via-white to-amber-50 py-1.5 pl-1.5 pr-5 shadow-card">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-white shadow-[0_2px_8px_-2px_rgba(217,119,6,0.6)]">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" />
+                  </svg>
+                </span>
+                <span className="text-sm font-semibold leading-tight text-amber-700">
+                  Documentos que comprovam a inclusão na fiscalização
+                </span>
+              </div>
               <h1 className="font-display text-4xl font-medium leading-[1.08] text-indigo-900 sm:text-6xl sm:leading-[1.05] lg:text-7xl">
                 Estruture a inclusão de pessoas com deficiência em um só lugar.
               </h1>
@@ -170,7 +180,7 @@ export function Home() {
                 construção de processos de inclusão mais organizados e consistentes.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button to="/#avalia" size="lg">Conhecer as soluções</Button>
+                <Button to="/#demonstracao" size="lg">Conhecer as soluções</Button>
                 <Button to="/#planos" variant="ghost" size="lg">Ver planos</Button>
               </div>
               <div className="mt-8 inline-flex flex-wrap items-center gap-x-6 gap-y-1.5 rounded-2xl border border-mist-300 bg-white/80 px-6 py-4 text-sm font-medium text-graphite-700 shadow-card backdrop-blur">
@@ -253,9 +263,9 @@ export function Home() {
       <MomentoDossie />
 
       {/* IncluiPro Avalia — escuro */}
-      <section id="avalia" className="bg-indigo-900 px-5 py-24 sm:px-8 sm:py-28">
+      <section id="avalia" className="overflow-hidden bg-indigo-900 px-5 py-24 sm:px-8 sm:py-28">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[3fr_2fr] lg:items-center">
-          <Reveal>
+          <Reveal className="min-w-0">
             <h2 className="font-display text-5xl font-medium text-white">IncluiPro Avalia</h2>
             <p className="mt-2 text-base font-medium text-indigo-300">Plano de Integração e Rotina Inclusiva</p>
             <p className="mt-5 max-w-[60ch] text-lg leading-relaxed text-indigo-200">
@@ -286,7 +296,7 @@ export function Home() {
             </div>
           </Reveal>
 
-          <Reveal delay={120} direction="scale">
+          <Reveal delay={120} direction="scale" className="min-w-0">
             <img
               src="/previews/avalia-relatorio.png"
               alt="Plano de Integração e Rotina Inclusiva real gerado pelo IncluiPro Avalia"
@@ -326,7 +336,7 @@ export function Home() {
               </ul>
             </Reveal>
 
-            <Reveal delay={120} direction="scale">
+            <Reveal delay={120} direction="scale" className="min-w-0">
               <img
                 src="/previews/gallery/checklist.png"
                 alt="Slide real de um kit do IncluiPro Lidera"
